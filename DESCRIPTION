@@ -1,9 +1,9 @@
 Package: STAT600FinalPackage
-Title: What the Package Does (One Line, Title Case)
+Title: Plot of Predicted and actual trajectory plots form pffr models
 Version: 0.0.0.9000
 Authors@R: 
     person("Seong Won (Brian)", "Park", , "brian1270@gmail.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Description: This package provides visualization tools for functional regression model fitted with refund::pffr(). It will plot the actual trajactory of individual as well as predicted one acquired from using the given model.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
