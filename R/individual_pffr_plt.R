@@ -92,4 +92,5 @@ individual_pffr_plt = function(model,
       )
     }
 
+      return(p)
 }
