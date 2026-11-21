@@ -1,8 +1,9 @@
 individual_pffr_plt = function(model,
                                data,
+                               id_col,
                                id,
-                               where_to_save
-                               ){
+                               include_re = TRUE,
+                               where_to_save = NULL){
 
   # Let's check few things before we get to plotting
 
@@ -19,9 +20,26 @@ individual_pffr_plt = function(model,
   # Now, let's extract domain index and actual response variable
   yind = model$pffr$yind
   response_name = all.vars(stats::formula(model))[1]
-  y_actual = as.matrix(data[[res_name]])
+  y_actual = as.matrix(data[[response_name]])
 
   # Getting predicted values.
+  # We can do two things here as i did in my code!
+  # 1. predict ignoring the random effect of individual subject
+  # 2. predict including the random effect of individual subject
+  # By default, let's include random effect of individual
+  if(include_re == TRUE){
+    y_pred <- stats::predict(model, newdata = data, reformat = TRUE)
+  }else{
+    # We are getting the smooth label of given individual.(To have an exact expression to exclude in predict funtion)
+    smooth_labels <- vapply(model$smooth, function(x) x$label, character(1))
+    re_terms <- unname(grep(paste0("\\b", id_col, "\\b"), smooth_labels, value = TRUE))
+    y_pred <- stats::predict(model, newdata = data, exclude = re_terms, reformat = TRUE)
+  }
+
+  # We are going to also get rid of predictions that the actual values do not exist
+  y_pred[is.na(y_actual)] <- NA
+
+
 
 
 
@@ -33,10 +51,4 @@ individual_pffr_plt = function(model,
 
   # Let's make the data frame that we are going to use to plot
 
-
-
-  # Getting name of dependent variable
-  res_name = all.vars(formula(model))[1]
-  y_actual = as.matrix(data[[res_name]])
-  y_pred = stats::fitted(model)
 }
