@@ -40,38 +40,56 @@ individual_pffr_plt = function(model,
   y_pred[is.na(y_actual)] <- NA
 
 
-############### Daata Preparation for plotting
+  ############### Daata Preparation for plotting
 
-n_obs = nrow(y_actual)
-n_window = length(yind)
+  n_obs = nrow(y_actual)
+  n_window = length(yind)
 
-base_df = data.frame(
-  id = rep(data[[id_col]], n_window),
-  yind = rep(yind, each = n_obs),
-  Actual = as.vector(y_actual),
-  Predicted = as.vector(y_pred),
-  stringsAsFactors = FALSE
-)
+  base_df = data.frame(
+    id = rep(data[[id_col]], n_window),
+    yind = rep(yind, each = n_obs),
+    Actual = as.vector(y_actual),
+    Predicted = as.vector(y_pred),
+    stringsAsFactors = FALSE
+  )
 
-# id is given when a user want specific individual!
-    if (!is.null(id)) {
-      # filtering base_df to have only id that user specified
-      base_df <- base_df[base_df$id %in% id, , drop = FALSE]
+  # id is given when a user want specific individual!
+      if (!is.null(id)) {
+        # filtering base_df to have only id that user specified
+        base_df <- base_df[base_df$id %in% id, , drop = FALSE]
+      }
+
+      base_df <- base_df[!is.na(base_df$Actual) | !is.na(base_df$Predicted), , drop = FALSE]
+
+  # Now creating data frame for plotting...
+      plot_df <- rbind(
+        data.frame(id = base_df$id, yind = base_df$yind, Type = "Actual", Value = base_df$Actual),
+        data.frame(id = base_df$id, yind = base_df$yind, Type = "Predicted", Value = base_df$Predicted)
+      )
+
+
+  # Creating plots now
+    p <- ggplot2::ggplot(plot_df, ggplot2::aes(x = yind, y = Value, color = Type, linetype = Type)) +
+      ggplot2::geom_line(linewidth = 0.8) +
+      ggplot2::facet_wrap(~ id) +
+      ggplot2::labs(x = "Functional Index (t)", y = res_name) +
+      ggplot2::theme_bw()
+
+
+  # Now saving the plots produced!
+
+    # If the path to download is provided
+    if (!is.null(where_to_save)) {
+      # If the provided directory does not exist, we are creating it for the user
+      if (!dir.exists(where_to_save)) {
+        dir.create(where_to_save, recursive = TRUE)
+      }
+      ggplot2::ggsave(
+        filename = file.path(where_to_save, "individual_pffr_plt.png"),
+        plot = p,
+        width = 8,
+        height = 6
+      )
     }
-
-    base_df <- base_df[!is.na(base_df$Actual) | !is.na(base_df$Predicted), , drop = FALSE]
-
-
-
-
-
-
-
-  # Let's make sure that the "where_to_save" path exist, and if it doesn't create one
-  if(!dir.exists(where_to_save)){
-    dir.create(where_to_save, recursive = TRUE) # Let's put recursive
-  }
-
-  # Let's make the data frame that we are going to use to plot
 
 }
