@@ -40,6 +40,29 @@ individual_pffr_plt = function(model,
   y_pred[is.na(y_actual)] <- NA
 
 
+############### Daata Preparation for plotting
+
+n_obs = nrow(y_actual)
+n_window = length(yind)
+
+base_df = data.frame(
+  id = rep(data[[id_col]], n_window),
+  yind = rep(yind, each = n_obs),
+  Actual = as.vector(y_actual),
+  Predicted = as.vector(y_pred),
+  stringsAsFactors = FALSE
+)
+
+# id is given when a user want specific individual!
+    if (!is.null(id)) {
+      # filtering base_df to have only id that user specified
+      base_df <- base_df[base_df$id %in% id, , drop = FALSE]
+    }
+
+    base_df <- base_df[!is.na(base_df$Actual) | !is.na(base_df$Predicted), , drop = FALSE]
+
+
+
 
 
 
