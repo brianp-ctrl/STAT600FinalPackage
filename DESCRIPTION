@@ -7,7 +7,9 @@ Description: This package provides visualization tools for functional regression
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 8.1.0
 Imports: 
     ggplot2,
+    stats
+Suggests:
     refund
+Config/roxygen2/version: 8.1.0
