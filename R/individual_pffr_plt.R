@@ -18,6 +18,20 @@ utils::globalVariables(c("yind", "Value", "Type"))
 #' @export
 #'
 #' @examples
+#' \donttest{
+#' library(refund)
+#' set.seed(42)
+#' t_grid <- seq(0, 1, length.out = 20)
+#' sim_df <- data.frame(
+#'   subject_id = factor(paste0("subj_", 1:4)),
+#'   group = factor(c("A", "A", "B", "B"))
+#' )
+#' sim_df$Y <- I(matrix(rnorm(80), nrow = 4, ncol = 20))
+#' fit <- pffr(Y ~ group + s(subject_id, bs = "re"), yind = t_grid, data = sim_df)
+#' individual_pffr_plt(fit, data = sim_df, id_col = "subject_id")
+#' }
+#'
+#'
 individual_pffr_plt = function(model,
                                data,
                                id_col,
